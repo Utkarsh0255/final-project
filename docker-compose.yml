@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  worker:
+    build: ./worker
+    depends_on:
+      - redis
+    volumes:
+      - ./data:/app/data
+    deploy:
+      replicas: 3
+
+  server:
+    build: ./server
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redis
+    volumes:
+      - ./data:/app/data
